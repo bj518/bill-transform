@@ -47,6 +47,7 @@ const props: UploadProps = {
   name: "file",
   multiple: false,
   onChange(info) {
+    console.log(info);
     const { file } = info;
     const { originFileObj } = file;
     if (!originFileObj) return;
@@ -60,7 +61,7 @@ const props: UploadProps = {
 };
 
 const UploadFileBox: React.FC = () => (
-  <Dragger accept=".csv" {...props}>
+  <Dragger customRequest={() => {}} accept=".csv" {...props}>
     <p className="ant-upload-drag-icon">
       <InboxOutlined />
     </p>
