@@ -1,33 +1,24 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
+import { ConfigProvider } from "antd";
 import "./App.css";
+import { CSVTransformer } from "./CSVTransformer";
 
 function App() {
-  const [count, setCount] = useState(0);
-
+  const theme = {
+    token: {
+      colorPrimary: "#b6c4b6",
+      colorInfo: "#b6c4b6",
+      colorWarning: "#c9957a",
+      colorError: "#af5554",
+      colorSuccess: "#148426",
+      colorBgBase: "#d1d9d4",
+      colorTextBase: "#3a3636",
+    },
+  };
   return (
     <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <ConfigProvider theme={theme}>
+        <CSVTransformer></CSVTransformer>
+      </ConfigProvider>
     </>
   );
 }
