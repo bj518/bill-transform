@@ -1,4 +1,4 @@
-import { Card, Tabs } from "antd";
+import { Card } from "antd";
 import { AppleOutlined } from "@ant-design/icons";
 import UploadFileBox from "./UploadFileBox";
 
@@ -6,27 +6,28 @@ export const CSVTransformer = () => {
   const data = [
     {
       icon: <AppleOutlined></AppleOutlined>,
-      label: "wechat",
       value: "wechat",
-      children: (
-        <Card>
-          <UploadFileBox></UploadFileBox>
-        </Card>
-      ),
+      children: <UploadFileBox type="wechat"></UploadFileBox>,
+    },
+    {
+      icon: <AppleOutlined></AppleOutlined>,
+      value: "alipay",
+      children: <UploadFileBox type="alipay"></UploadFileBox>,
     },
   ];
+
   return (
-    <div>
-      <Tabs
-        defaultActiveKey="2"
-        items={data.map((val) => {
-          return {
-            key: val.value,
-            label: `Tab ${val.label}`,
-            icon: val.children,
-          };
-        })}
-      />
+    <div
+      className="transform-container"
+      style={{
+        display: "flex",
+        padding: "48px",
+        justifyContent: "space-between",
+      }}
+    >
+      {data.map((c) => (
+        <Card key={c.value}>{c.children}</Card>
+      ))}
     </div>
   );
 };

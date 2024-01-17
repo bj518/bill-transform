@@ -3,70 +3,82 @@ import type { UploadProps } from "antd";
 import { Upload } from "antd";
 import Papa, { ParseResult } from "papaparse";
 import React from "react";
-
+import { UploadType, aliHandler, configs, parseConfigs, title } from "./config";
 const { Dragger } = Upload;
-const startIndex = 17;
 
-const timeIndex = 0;
-const valueIndex = 5;
-const typeIdx = 4;
-const nameIdx = 2;
+const UploadFileBox: React.FC<{ type: UploadType }> = ({ type }) => {
+  const config = configs[type];
+  const parseConfig = parseConfigs[type];
 
-const onParseSuccess = (res: ParseResult<string[]>) => {
-  const { data } = res;
-  const expectedData = data
-    .filter((_, index) => index >= startIndex)
-    .map((value) => {
-      return [
-        value[nameIdx],
-        value[timeIndex],
-        value[valueIndex],
-        "",
-        "",
-        "",
-        "",
-        value[typeIdx],
-      ];
-    });
-  console.log(expectedData);
-  expectedData.unshift(["名称", "时间", "金额", "", "", "", "", "类型"]);
-  const csv = Papa.unparse(expectedData);
-  const blob = new Blob([csv], { type: "text/csv" });
-  const link = document.createElement("a");
-  link.href = URL.createObjectURL(blob);
-  link.download = "exported_data.csv";
-  // 将链接添加到文档并触发下载
-  document.body.appendChild(link);
-  link.click();
+  const formatHandler = (data: string[][]) => {
+    return data
+      .filter((_, index) => index >= config.startIndex)
+      .map((value) => {
+        return [
+          value[config.nameIdx],
+          value[config.timeIndex],
+          value[config.valueIndex],
+          ...new Array(4).fill(null),
+          value[config.typeIdx],
+        ];
+      });
+  };
 
-  // 清理创建的元素
-  document.body.removeChild(link);
+  function handleDownloadCSV(data: string[][]) {
+    const csv = Papa.unparse(data);
+    const str = data[1][1];
+    const blob = new Blob([csv], { type: "text/csv" });
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = `${type}_ime_${str}.csv`;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
+  const onParseSuccess = (res: ParseResult<string[]>) => {
+    const { data } = res;
+
+    let expectedData = type === "wechat" ? data : aliHandler(data);
+    expectedData = [...formatHandler(expectedData)];
+    expectedData.unshift(title);
+
+    handleDownloadCSV(expectedData);
+  };
+
+  const props: UploadProps = {
+    name: "file",
+    multiple: false,
+    onChange(info) {
+      const { file } = info;
+      const { originFileObj } = file;
+      if (!originFileObj) return;
+
+      Papa.parse(originFileObj, {
+        complete: onParseSuccess,
+        ...parseConfig,
+      });
+    },
+    onDrop(e) {
+      console.log("Dropped files", e.dataTransfer.files);
+    },
+  };
+
+  return (
+    <Dragger
+      showUploadList={false}
+      customRequest={() => {}}
+      accept=".csv"
+      {...props}
+    >
+      <p className="ant-upload-drag-icon">
+        <InboxOutlined />
+      </p>
+      <p className="ant-upload-hint">把{type}csv拖到这里哦</p>
+    </Dragger>
+  );
 };
-
-const props: UploadProps = {
-  name: "file",
-  multiple: false,
-  onChange(info) {
-    console.log(info);
-    const { file } = info;
-    const { originFileObj } = file;
-    if (!originFileObj) return;
-    Papa.parse(originFileObj, {
-      complete: onParseSuccess,
-    });
-  },
-  onDrop(e) {
-    console.log("Dropped files", e.dataTransfer.files);
-  },
-};
-
-const UploadFileBox: React.FC = () => (
-  <Dragger customRequest={() => {}} accept=".csv" {...props}>
-    <p className="ant-upload-drag-icon">
-      <InboxOutlined />
-    </p>
-    <p className="ant-upload-hint">把csv拖到这里哦</p>
-  </Dragger>
-);
 
 export default UploadFileBox;

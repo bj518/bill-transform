@@ -1,6 +1,7 @@
-import { ConfigProvider } from "antd";
+import { ConfigProvider, Layout } from "antd";
 import "./App.css";
 import { CSVTransformer } from "./CSVTransformer";
+import { Content } from "antd/es/layout/layout";
 
 function App() {
   const theme = {
@@ -17,7 +18,11 @@ function App() {
   return (
     <>
       <ConfigProvider theme={theme}>
-        <CSVTransformer></CSVTransformer>
+        <Layout>
+          <Content>
+            <CSVTransformer></CSVTransformer>
+          </Content>
+        </Layout>
       </ConfigProvider>
     </>
   );
