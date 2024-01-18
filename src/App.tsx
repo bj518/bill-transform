@@ -1,7 +1,9 @@
 import { ConfigProvider, Layout } from "antd";
 import "./App.css";
-import { CSVTransformer } from "./CSVTransformer";
+import { CSVTransformer } from "./components/CSVTransformer";
 import { Content } from "antd/es/layout/layout";
+import MyProvider from "./context";
+import { UserSelect } from "./components/userSelect";
 
 function App() {
   const theme = {
@@ -19,9 +21,12 @@ function App() {
     <>
       <ConfigProvider theme={theme}>
         <Layout>
-          <Content>
-            <CSVTransformer></CSVTransformer>
-          </Content>
+          <MyProvider>
+            <Content style={{ padding: "48px" }}>
+              <UserSelect></UserSelect>
+              <CSVTransformer></CSVTransformer>
+            </Content>
+          </MyProvider>
         </Layout>
       </ConfigProvider>
     </>

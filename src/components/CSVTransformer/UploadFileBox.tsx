@@ -2,17 +2,21 @@ import { InboxOutlined } from "@ant-design/icons";
 import type { UploadProps } from "antd";
 import { Upload } from "antd";
 import Papa, { ParseResult } from "papaparse";
-import React from "react";
+import React, { useContext } from "react";
+import { MyContext } from "../../context";
 import { UploadType, aliHandler, configs, parseConfigs, title } from "./config";
+import { isEmpty } from "lodash";
 const { Dragger } = Upload;
 
 const UploadFileBox: React.FC<{ type: UploadType }> = ({ type }) => {
   const config = configs[type];
   const parseConfig = parseConfigs[type];
+  const { value: name } = useContext(MyContext);
 
   const formatHandler = (data: string[][]) => {
     return data
       .filter((_, index) => index >= config.startIndex)
+      .filter((row) => !isEmpty(row[0]))
       .map((value) => {
         return [
           value[config.nameIdx],
@@ -20,6 +24,7 @@ const UploadFileBox: React.FC<{ type: UploadType }> = ({ type }) => {
           value[config.valueIndex],
           ...new Array(4).fill(null),
           value[config.typeIdx],
+          name,
         ];
       });
   };
@@ -27,6 +32,8 @@ const UploadFileBox: React.FC<{ type: UploadType }> = ({ type }) => {
   function handleDownloadCSV(data: string[][], name: string) {
     const csv = Papa.unparse(data);
     const blob = new Blob([csv], { type: "text/csv" });
+
+    name = type === "wechat" ? name : `alipay${data[1][1]}.csv`;
 
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
@@ -39,7 +46,6 @@ const UploadFileBox: React.FC<{ type: UploadType }> = ({ type }) => {
 
   const onParseSuccess = (res: ParseResult<string[]>, name: string) => {
     const { data } = res;
-    console.log(res);
 
     let expectedData = type === "wechat" ? data : aliHandler(data);
     expectedData = [...formatHandler(expectedData)];

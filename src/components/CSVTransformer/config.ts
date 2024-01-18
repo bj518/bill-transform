@@ -44,6 +44,7 @@ export const title = [
   "金额",
   ...new Array(stepLength).fill(null),
   "类型",
+  "成员",
 ];
 
 export const aliHandler = (data: string[][]) => {
