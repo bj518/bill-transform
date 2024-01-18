@@ -24,28 +24,28 @@ const UploadFileBox: React.FC<{ type: UploadType }> = ({ type }) => {
       });
   };
 
-  function handleDownloadCSV(data: string[][]) {
+  function handleDownloadCSV(data: string[][], name: string) {
     const csv = Papa.unparse(data);
-    const str = data[1][1];
     const blob = new Blob([csv], { type: "text/csv" });
 
     const link = document.createElement("a");
     link.href = URL.createObjectURL(blob);
-    link.download = `${type}_ime_${str}.csv`;
+    link.download = `custom_${name}`;
 
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   }
 
-  const onParseSuccess = (res: ParseResult<string[]>) => {
+  const onParseSuccess = (res: ParseResult<string[]>, name: string) => {
     const { data } = res;
+    console.log(res);
 
     let expectedData = type === "wechat" ? data : aliHandler(data);
     expectedData = [...formatHandler(expectedData)];
     expectedData.unshift(title);
 
-    handleDownloadCSV(expectedData);
+    handleDownloadCSV(expectedData, name);
   };
 
   const props: UploadProps = {
@@ -54,10 +54,12 @@ const UploadFileBox: React.FC<{ type: UploadType }> = ({ type }) => {
     onChange(info) {
       const { file } = info;
       const { originFileObj } = file;
+      console.log(originFileObj, file);
       if (!originFileObj) return;
 
       Papa.parse(originFileObj, {
-        complete: onParseSuccess,
+        complete: (res: ParseResult<string[]>) =>
+          onParseSuccess(res, file.name),
         ...parseConfig,
       });
     },
