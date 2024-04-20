@@ -4,7 +4,8 @@ import { Upload } from "antd";
 import Papa, { ParseResult } from "papaparse";
 import React, { useContext } from "react";
 import { MyContext } from "../../context";
-import { UploadType, aliHandler, configs, parseConfigs, title } from "./config";
+import { UploadType, configs, parseConfigs, title } from "./config";
+import { aliHandler } from "./aliHandler";
 import { isEmpty } from "lodash";
 const { Dragger } = Upload;
 

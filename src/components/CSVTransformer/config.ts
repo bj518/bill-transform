@@ -1,4 +1,4 @@
-const wechatConfig = {
+export const wechatConfig = {
   startIndex: 17,
   timeIndex: 0,
   valueIndex: 5,
@@ -6,7 +6,7 @@ const wechatConfig = {
   nameIdx: 2,
 };
 
-const aliConfig = {
+export const aliConfig = {
   startIndex: 1,
   timeIndex: 0,
   valueIndex: 6,
@@ -46,25 +46,3 @@ export const title = [
   "类型",
   "成员",
 ];
-
-export const aliHandler = (data: string[][]) => {
-  const expectedData = data[22];
-  const result: string[][] = [];
-  let currentSegment: string[] = [];
-
-  expectedData.forEach((item) => {
-    if (item.includes("\n")) {
-      const segmentWithoutNewline = item.replace("\n", "");
-      result.push([...currentSegment]);
-      currentSegment = [segmentWithoutNewline];
-    } else {
-      currentSegment.push(item);
-    }
-  });
-
-  if (currentSegment.length > 0) {
-    result.push([...currentSegment]);
-  }
-
-  return result;
-};
