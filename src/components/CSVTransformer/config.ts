@@ -45,4 +45,7 @@ export const title = [
   ...new Array(stepLength).fill(null),
   "类型",
   "成员",
+  "支出成员",
+  "大类",
+  "小类",
 ];

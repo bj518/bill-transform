@@ -24,8 +24,8 @@ export const aliHandler = (data: string[][]) => {
   result.forEach((row) => {
     const name = row[aliConfig.nameIdx] ?? "";
     let value = row[aliConfig.valueIndex] ?? 0;
+
     if (name.indexOf("余额宝") === -1) {
-      console.log(name);
       if (name.indexOf("退款") !== -1) {
         const n = name.split("-")[1];
         map.set(n, value);
@@ -40,6 +40,6 @@ export const aliHandler = (data: string[][]) => {
       }
     }
   });
-  console.log(da);
+
   return da;
 };

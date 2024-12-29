@@ -7,6 +7,7 @@ import { MyContext } from "../../context";
 import { UploadType, configs, parseConfigs, title } from "./config";
 import { aliHandler } from "./aliHandler";
 import { isEmpty } from "lodash";
+import { typesGroupByKeyWords } from "./keywords";
 const { Dragger } = Upload;
 
 const UploadFileBox: React.FC<{ type: UploadType }> = ({ type }) => {
@@ -18,7 +19,16 @@ const UploadFileBox: React.FC<{ type: UploadType }> = ({ type }) => {
     return data
       .filter((_, index) => index >= config.startIndex)
       .filter((row) => !isEmpty(row[0]))
+
       .map((value) => {
+        let types: string[] = [];
+
+        Object.keys(typesGroupByKeyWords).some((key) => {
+          if (value[config.nameIdx].includes(key)) {
+            types = typesGroupByKeyWords[key];
+          }
+        });
+
         return [
           value[config.nameIdx],
           value[config.timeIndex],
@@ -26,6 +36,8 @@ const UploadFileBox: React.FC<{ type: UploadType }> = ({ type }) => {
           ...new Array(4).fill(null),
           value[config.typeIdx],
           name,
+          name,
+          ...types,
         ];
       });
   };
@@ -61,7 +73,7 @@ const UploadFileBox: React.FC<{ type: UploadType }> = ({ type }) => {
     onChange(info) {
       const { file } = info;
       const { originFileObj } = file;
-      console.log(originFileObj, file);
+
       if (!originFileObj) return;
 
       Papa.parse(originFileObj, {
