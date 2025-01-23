@@ -19,7 +19,6 @@ const UploadFileBox: React.FC<{ type: UploadType }> = ({ type }) => {
     return data
       .filter((_, index) => index >= config.startIndex)
       .filter((row) => !isEmpty(row[0]))
-      .filter((row) => (row[config.valueIndex] as string) !== "0.00")
 
       .map((value) => {
         let types: string[] = [];
